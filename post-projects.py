@@ -44,4 +44,4 @@ def delete_projects():
 
 
 if __name__ == "__main__":
-        delete_projects()
+        
