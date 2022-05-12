@@ -16,7 +16,7 @@ def post():
                 for j in files:
                         file = open(f'./projects/{j}', 'rb')
                         data = json.loads(file.read())
-                        print(data['id'])
+                        print('ID: ' + str(data['id']))
                         response = requests.post(url=api, data=data, headers=headers)
                         print(response)
                         if response.status_code != 200:
@@ -42,7 +42,7 @@ def delete_projects():
         for j in range(len(resp_dict)):
                 if response.status_code != 200:
                         break
-                print(f"{resp_dict[j]['id']}")
+                print(f"ID: {resp_dict[j]['id']}")
                 requests.delete(url=api+f"/{resp_dict[j]['id']}", headers={'PRIVATE-TOKEN': f'{token}'}) 
                 print(response)
 
