@@ -2,8 +2,6 @@ from os import walk
 import requests
 import json
 
-# GET
-
 api = "https://gitlab.com/api/v4/"
 get_token = 'glpat-Sa6G7btfkL6Vm-e7maAY'
 
@@ -18,9 +16,7 @@ def request(option):
                 print(response)    
         for i in range(len(resp_dict)):
                 with open(f"./users/{resp_dict[i]['id']}-user.json", "w") as write_file:
-                        json.dump(resp_dict, write_file, indent=4)
-
-# POST
+                        json.dump(resp_dict[i], write_file, indent=4)
 
 url = 'http://localhost:8080/api/v4/users/'
 post_token = 'sWQYxfYNJzbk4Mvksg61'
@@ -40,7 +36,8 @@ def post():
                         response = requests.post(url=url, data=data[i], headers=headers)
                         print(url)
                         print(response)
+                        
 
 if __name__ == "__main__":
-        #request('users')
-        post()
+        request('groups/3544756/members')
+        # post()
