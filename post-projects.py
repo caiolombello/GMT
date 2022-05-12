@@ -11,10 +11,9 @@ for (dirpath, dirnames, filenames) in walk('./projects'):
         files.extend(filenames)
 
 def post():
-        print('POSTING PROJECTS')
+        print('\nPOSTING PROJECTS')
         for i in range(len(files)):
                 for j in files:
-                        print(j)
                         file = open(f'./projects/{j}', 'rb')
                         data = json.loads(file.read())
                         print(data['id'])
@@ -23,7 +22,7 @@ def post():
                         if response.status_code != 200:
                                 files.remove(j)
                                 continue
-        print('SAVING NEW PROJECTS')
+        print('\nSAVING NEW PROJECTS')
         write_post()
 
 
@@ -36,6 +35,7 @@ def write_post():
                         json.dump(resp_dict[i], write_file, indent=4)
 
 def delete_projects():
+        print('\nDELETING PROJECTS')
         response = requests.get(url=api+'?per_page=100', headers={'PRIVATE-TOKEN': f'{token}'})        
         print(response)
         resp_dict = json.loads(response.content)
@@ -48,4 +48,4 @@ def delete_projects():
 
 if __name__ == "__main__":
         post()
-        # delete_projects()
+        delete_projects()
