@@ -1,28 +1,34 @@
+import colorama
+from colorama import Fore
 import requests
 import json
 
 api = "https://gitlab.com/api/v4/"
 token = 'glpat-Sa6G7btfkL6Vm-e7maAY'
 
+count_saved_files = 2
+
 def request_id(option):         
         response = requests.get(f"{api}{option}", headers={'PRIVATE-TOKEN': f'{token}'})        
         content = response.content
-        print(response)
+        print(Fore.CYAN + str(response))
         resp_dict = json.loads(content)
         ids = []
-        print(option)
+        print(Fore.BLUE + option)
         if response.status_code != 200:
-                return ids    
+                return ids 
         for i in range(len(resp_dict)):
                 if 'projects' in option:
-                        with open(f"./projects/{resp_dict[i]['id']}-project.json", "w") as write_file:
+                        filename = f"{resp_dict[i]['id']}-project.json"
+                        with open(f"./projects/{filename}", "w") as write_file:
                                 json.dump(resp_dict[i], write_file, indent=4)
+                        print(Fore.GREEN + f'{filename} SAVED')
                 else:
                         ids.append(resp_dict[i]['id'])
         return ids
 
 def projects_main():
-        print("MAIN")
+        print(Fore.YELLOW + "\nMAIN")
         id = '3544756'
         option = f'groups/{id}/subgroups'
         
@@ -34,61 +40,61 @@ def projects_main():
                 main.extend(request_id(option))
         print("OK")
         
-        print("MAIN PROJECTS")
+        print(Fore.YELLOW + "\nMAIN PROJECTS")
         project = []
         for i in ids:
                 id = i
                 option = f'groups/{id}/projects/'
-                print(option)
+                print(Fore.LIGHTBLUE_EX + option)
                 res = request_id(option)
                 if res:
                         project.extend(res)
         print("OK")
+        print(Fore.WHITE + 'TOOK IDS: ' + str(main))
         return main
 
 def projects_groups():
-        ids = projects_main()
-        print("GROUPS")
-        groups = projects_main()
-        for i in ids:
+        print(Fore.YELLOW + "\nGROUPS")
+        groups_ids = projects_main()
+        for i in groups_ids:
                 id = i
                 option = f'groups/{id}/subgroups'
-                groups.extend(request_id(option))
+                groups_ids.extend(request_id(option))
 
         
-        print("GROUP PROJECTS")
-        project = projects_main()
-        for i in ids:
+        print(Fore.YELLOW + "\nGROUP PROJECTS")
+        for i in groups_ids:
                 id = i
                 option = f'groups/{id}/projects/'
-                print(option)
+                print(Fore.LIGHTBLUE_EX + option)
                 res = request_id(option)
                 if res:
-                        project.extend(res)
+                        groups_ids.extend(res)
         print("OK")
-        return groups
+        print(Fore.WHITE + 'TOOK IDS: ' + str(groups_ids))
+        return groups_ids
 
 def projects_subgroups():
-        ids = projects_groups()
-        print("SUBGROUPS")
-        groups = []
-        for i in ids:
+        print(Fore.YELLOW + "\nSUBGROUPS")
+        groups_ids = projects_groups()
+        for i in groups_ids:
                 id = i
                 option = f'groups/{id}/subgroups'
-                groups.extend(request_id(option))
+                groups_ids.extend(request_id(option))
 
         
-        print("SUBGROUP PROJECTS")
-        project = []
-        for i in ids:
+        print(Fore.YELLOW + "\nSUBGROUP PROJECTS")
+        for i in groups_ids:
                 id = i
                 option = f'groups/{id}/projects/'
-                print(option)
+                print(Fore.LIGHTBLUE_EX + option)
                 res = request_id(option)
                 if res:
-                        project.extend(res)
+                        groups_ids.extend(res)
         print("OK")
-        return project
+        print(Fore.WHITE + 'TOOK IDS: ' + str(groups_ids))
+        print(Fore.WHITE + 'IDS COUNT: ' + str(len(groups_ids)))
+        return groups_ids
 
 if __name__ == "__main__":
         projects_subgroups()
