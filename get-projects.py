@@ -1,4 +1,3 @@
-import colorama
 from colorama import Fore
 import requests
 import json
@@ -29,7 +28,7 @@ def request_id(option):
 
 def projects_main():
         print(Fore.YELLOW + "\nMAIN")
-        id = '3544756'
+        id = '636953'
         option = f'groups/{id}/subgroups'
         
         ids = request_id(option)
