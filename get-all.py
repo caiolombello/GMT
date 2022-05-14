@@ -1,3 +1,4 @@
+from os import remove, walk, mkdir, rmdir, path, listdir
 from colorama import Fore
 import requests
 import json
@@ -11,11 +12,21 @@ def request_id(option):
         print(Fore.CYAN + str(response))
         resp_dict = json.loads(content)
         ids = []
-        print(Fore.BLUE + option)
         if response.status_code != 200:
-                return ids 
+                return ids
+        print(Fore.BLUE + option)
         for i in range(len(resp_dict)):
-                if 'projects' in option:
+                if 'variables' in option:
+                        prefix = option.split("/")
+                        if not path.exists('variables'):
+                                mkdir('variables')
+                        filename = f"{prefix[1]}-ci_variables.json"
+                        with open(f"./variables/{filename}", "w") as write_file:
+                                json.dump(resp_dict, write_file, indent=4)
+                        print(Fore.GREEN + f'{filename} SAVED')
+                elif 'projects' in option:
+                        if not path.exists('projects'):
+                                mkdir('projects')
                         filename = f"{resp_dict[i]['id']}-project.json"
                         with open(f"./projects/{filename}", "w") as write_file:
                                 json.dump(resp_dict[i], write_file, indent=4)
@@ -26,7 +37,7 @@ def request_id(option):
 
 def projects_main():
         print(Fore.YELLOW + "\nMAIN")
-        id = '636953'
+        id = '3544756'
         option = f'groups/{id}/subgroups'
         
         ids = request_id(option)
@@ -93,5 +104,20 @@ def projects_subgroups():
         print(Fore.WHITE + 'IDS COUNT: ' + str(len(groups_ids)))
         return groups_ids
 
+def projects_ci():
+        print(Fore.YELLOW + "VARIABLES")
+        
+        files = []
+        for (dirpath, dirnames, filenames) in walk('./projects'):
+                files.extend(filenames)
+
+        for j in files:
+                file = open(f'./projects/{j}', 'rb')
+                data = json.loads(file.read())
+
+                option = f"projects/{str(data['id'])}/variables"
+                request_id(option)
+
 if __name__ == "__main__":
         projects_subgroups()
+        projects_ci()
