@@ -1,6 +1,6 @@
 import subprocess
 from colorama import Fore
-from os import remove, walk, mkdir, rmdir, path
+from os import remove, walk, mkdir, rmdir, path, listdir
 import requests
 import json
 
@@ -58,18 +58,22 @@ def clone_repo_content(id):
 
 def push_repo_content():
         folders = []
-        for (dirpath, dirnames, filenames) in walk('./repo-content'):
-                folders.extend(dirnames)
+        for dirs in listdir('./repo-content'):
+                folders.append(dirs)
+                folders.sort()
         files = []
         for (dirpath, dirnames, filenames) in walk('./new-projects'):
                 files.extend(filenames)
+                files.sort()
         for i in range(len(files)):
-                file = open(f'./new-projects/{files[1]}', 'rb')
+                file = open(f'./new-projects/{files[i]}', 'rb')
                 data = json.loads(file.read())
                 for j in range(len(folders)):
                         for k in folders:
+                                print(file)
+                                print(k)
                                 subprocess.Popen(["git", "remote", "rename", "origin", "old-origin"], cwd='./repo-content/' + str(k))
-                                subprocess.Popen(["git", "remote", "add", "origin", f"{data['http_url_to_repo']}"], cwd='./repo-content/' + str(k))
+                                subprocess.Popen(["git", "remote", "add", "origin", f"{data['ssh_url_to_repo']}"], cwd='./repo-content/' + str(k))
                                 subprocess.Popen(["git", "push", "-u", "origin", "--all"], cwd='./repo-content/' + str(k))
                                 subprocess.Popen(["git", "push", "-u", "origin", "--tags"], cwd='./repo-content/' + str(k))
 
