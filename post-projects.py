@@ -64,10 +64,11 @@ def push_repo_content():
         for i in range(len(files)):
                 file = open(f'./new-projects/{files[i]}', 'rb')
                 data = json.loads(file.read())
-                subprocess.Popen(["git", "remote", "rename", "origin", "old-origin"], cwd='./repo-content/' + data['path'])
-                subprocess.Popen(["git", "remote", "add", "origin", f"{data['ssh_url_to_repo']}"], cwd='./repo-content/' + data['path'])
-                subprocess.Popen(["git", "push", "-u", "origin", "--all"], cwd='./repo-content/' + data['path'])
-                subprocess.Popen(["git", "push", "-u", "origin", "--tags"], cwd='./repo-content/' + data['path'])
+                path = './repo-content/' + data['path']
+                subprocess.Popen(["git", "remote", "rename", "origin", "old-origin"], cwd=path)
+                subprocess.Popen(["git", "remote", "add", "origin", f"{data['ssh_url_to_repo']}"], cwd=path)
+                subprocess.Popen(["git", "push", "-u", "origin", "--all"], cwd=path)
+                subprocess.Popen(["git", "push", "-u", "origin", "--tags"], cwd=path)
 
 def delete_projects():
         print(Fore.BLUE + '\nDELETING PROJECTS')
