@@ -35,7 +35,7 @@ def post():
 
 def write_post():
         print(Fore.BLUE + '\nSAVING NEW PROJECTS')
-        if not path.exists:
+        if not path.exists("new-projects"):
                 mkdir("new-projects")
         response = requests.get(url=api+'?per_page=100', headers={'PRIVATE-TOKEN': f'{token}'})        
         if response.status_code == 200:
@@ -53,14 +53,10 @@ def clone_repo_content(id):
         file = open(f'./projects/{id}-project.json', 'rb')
         data = json.loads(file.read())
         if not path.exists(str(data['id'])):
-                mkdir('./repo-content/' + str(data['id']))
-                git("clone", data['ssh_url_to_repo'], './repo-content/' + str(data['id']))        
+                mkdir('./repo-content/' + str(data['path']))
+                git("clone", data['ssh_url_to_repo'], './repo-content/' + str(data['path']))
 
 def push_repo_content():
-        folders = []
-        for dirs in listdir('./repo-content'):
-                folders.append(dirs)
-                folders.sort()
         files = []
         for (dirpath, dirnames, filenames) in walk('./new-projects'):
                 files.extend(filenames)
@@ -68,14 +64,10 @@ def push_repo_content():
         for i in range(len(files)):
                 file = open(f'./new-projects/{files[i]}', 'rb')
                 data = json.loads(file.read())
-                for j in range(len(folders)):
-                        for k in folders:
-                                print(file)
-                                print(k)
-                                subprocess.Popen(["git", "remote", "rename", "origin", "old-origin"], cwd='./repo-content/' + str(k))
-                                subprocess.Popen(["git", "remote", "add", "origin", f"{data['ssh_url_to_repo']}"], cwd='./repo-content/' + str(k))
-                                subprocess.Popen(["git", "push", "-u", "origin", "--all"], cwd='./repo-content/' + str(k))
-                                subprocess.Popen(["git", "push", "-u", "origin", "--tags"], cwd='./repo-content/' + str(k))
+                subprocess.Popen(["git", "remote", "rename", "origin", "old-origin"], cwd='./repo-content/' + data['path'])
+                subprocess.Popen(["git", "remote", "add", "origin", f"{data['ssh_url_to_repo']}"], cwd='./repo-content/' + data['path'])
+                subprocess.Popen(["git", "push", "-u", "origin", "--all"], cwd='./repo-content/' + data['path'])
+                subprocess.Popen(["git", "push", "-u", "origin", "--tags"], cwd='./repo-content/' + data['path'])
 
 def delete_projects():
         print(Fore.BLUE + '\nDELETING PROJECTS')
