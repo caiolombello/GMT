@@ -1,3 +1,4 @@
+from operator import contains
 from os import walk
 import requests
 import json
@@ -18,7 +19,9 @@ def request(option):
                 print(response)    
         for i in range(len(resp_dict)):
                 with open(f"./users/{resp_dict[i]['id']}-user.json", "w") as write_file:
-                        json.dump(resp_dict[i], write_file, indent=4)
+                        user = resp_dict[i]['username']
+                        user = ''.join([i for i in user if not i.isdigit()])
+                        json.dump({'username': user, 'name': resp_dict[i]['name'], 'email': f"{user}@vertigo.com.br", 'reset_password': 'true'}, write_file, indent=4)
 
 # POST
 
@@ -26,22 +29,21 @@ url = 'http://localhost:8080/api/v4/users/'
 post_token = 'sWQYxfYNJzbk4Mvksg61'
 
 headers = {'PRIVATE-TOKEN' : post_token}
-files = []
-for (dirpath, dirnames, filenames) in walk('./users'):
-        files.extend(filenames)
-        break
+
 
 def post():
+        files = []
+        for (dirpath, dirnames, filenames) in walk('./users'):
+                files.extend(filenames)
+        
         for i in files:
                 file = open(f'./users/{i}', 'rb')
                 data = json.loads(file.read())
-
-                for i in range(len(data)):
-                        response = requests.post(url=url, data=data[i], headers=headers)
-                        print(url)
-                        print(response)
-                        
+                response = requests.post(url=url, data=data, headers=headers)
+                if response.status_code == 201:
+                        print('USER CREATED:' + data['username'])
+                print(response)
 
 if __name__ == "__main__":
         request('groups/3544756/members')
-        # post()
+        post()
