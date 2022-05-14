@@ -17,9 +17,9 @@ def request(option):
         if response.status_code != 200:
                 print(response)    
         for i in range(len(resp_dict)):
-                with open(f"./users/{resp_dict[i]['id']}-user.json", "w") as write_file:
-                        user = resp_dict[i]['username']
-                        user = ''.join([i for i in user if not i.isdigit()])
+                user = resp_dict[i]['username']
+                user = ''.join([i for i in user if not i.isdigit()])
+                with open(f"./users/{user}.json", "w") as write_file:
                         json.dump({'username': user, 'name': resp_dict[i]['name'], 'email': f"{user}@vertigo.com.br", 'reset_password': 'true'}, write_file, indent=4)
 
 # POST
@@ -40,9 +40,10 @@ def post():
                 data = json.loads(file.read())
                 response = requests.post(url=url, data=data, headers=headers)
                 if response.status_code == 201:
-                        print('USER CREATED:' + data['username'])
+                        print('USER CREATED: ' + data['username'])
                 print(response)
 
 if __name__ == "__main__":
+        request('groups/636953/members')
         request('groups/3544756/members')
         post()

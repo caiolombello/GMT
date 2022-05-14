@@ -24,10 +24,17 @@ def request_id(option):
                         with open(f"./variables/{filename}", "w") as write_file:
                                 json.dump(resp_dict, write_file, indent=4)
                         print(Fore.GREEN + f'{filename} SAVED')
+                elif 'runners' in option:
+                        if not path.exists('runners'):
+                                mkdir('runners')
+                        filename = f"{resp_dict[i]['id']}-runner.json"
+                        with open(f"./runners/{filename}", "w") as write_file:
+                                if json.dump(resp_dict[i], write_file, indent=4):
+                                        print(Fore.GREEN + f'{filename} SAVED')
                 elif 'projects' in option:
                         if not path.exists('projects'):
                                 mkdir('projects')
-                        filename = f"{resp_dict[i]['id']}-project.json"
+                        filename = f"{resp_dict[i]['path']}.json"
                         with open(f"./projects/{filename}", "w") as write_file:
                                 json.dump(resp_dict[i], write_file, indent=4)
                         print(Fore.GREEN + f'{filename} SAVED')
@@ -118,6 +125,21 @@ def projects_ci():
                 option = f"projects/{str(data['id'])}/variables"
                 request_id(option)
 
+def runners():
+        print(Fore.YELLOW + "RUNNERS")
+        
+        files = []
+        for (dirpath, dirnames, filenames) in walk('./projects'):
+                files.extend(filenames)
+
+        for j in files:
+                file = open(f'./projects/{j}', 'rb')
+                data = json.loads(file.read())
+
+                option = f"projects/{str(data['id'])}/runners"
+                request_id(option)
+
 if __name__ == "__main__":
-        projects_subgroups()
-        projects_ci()
+        # projects_subgroups()
+        # projects_ci()
+        runners()
