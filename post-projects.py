@@ -29,13 +29,14 @@ def post():
                                 print(Fore.RED + 'ID: ' + str(data['id']) + '    ' + str(response))
                                 files.remove(j)
                                 continue
-        print(Fore.BLUE + '\nSAVING NEW PROJECTS')
-        if not path.exists:
-                mkdir("new-projects")
         write_post()
+        push_repo_content()
 
 
 def write_post():
+        print(Fore.BLUE + '\nSAVING NEW PROJECTS')
+        if not path.exists:
+                mkdir("new-projects")
         response = requests.get(url=api+'?per_page=100', headers={'PRIVATE-TOKEN': f'{token}'})        
         if response.status_code == 200:
                 print(Fore.GREEN + str(response))
@@ -54,6 +55,23 @@ def clone_repo_content(id):
         if not path.exists(str(data['id'])):
                 mkdir('./repo-content/' + str(data['id']))
                 git("clone", data['ssh_url_to_repo'], './repo-content/' + str(data['id']))        
+
+def push_repo_content():
+        folders = []
+        for (dirpath, dirnames, filenames) in walk('./repo-content'):
+                folders.extend(dirnames)
+        files = []
+        for (dirpath, dirnames, filenames) in walk('./new-projects'):
+                files.extend(filenames)
+        for i in range(len(files)):
+                file = open(f'./new-projects/{files[1]}', 'rb')
+                data = json.loads(file.read())
+                for j in range(len(folders)):
+                        for k in folders:
+                                subprocess.Popen(["git", "remote", "rename", "origin", "old-origin"], cwd='./repo-content/' + str(k))
+                                subprocess.Popen(["git", "remote", "add", "origin", f"{data['http_url_to_repo']}"], cwd='./repo-content/' + str(k))
+                                subprocess.Popen(["git", "push", "-u", "origin", "--all"], cwd='./repo-content/' + str(k))
+                                subprocess.Popen(["git", "push", "-u", "origin", "--tags"], cwd='./repo-content/' + str(k))
 
 def delete_projects():
         print(Fore.BLUE + '\nDELETING PROJECTS')
@@ -76,4 +94,4 @@ def delete_projects():
 if __name__ == "__main__":
         post()
         # delete_projects()
-        
+        # push_repo_content()
