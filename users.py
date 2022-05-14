@@ -1,4 +1,3 @@
-from operator import contains
 from os import walk
 import requests
 import json
@@ -8,7 +7,7 @@ import json
 api = "https://gitlab.com/api/v4/"
 get_token = 'glpat-Sa6G7btfkL6Vm-e7maAY'
 
-def request(option):         
+def request(option):        
         response = requests.get(f"{api}{option}", headers={'PRIVATE-TOKEN': f'{get_token}'})        
         content = response.content
         print(response)
