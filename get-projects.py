@@ -5,8 +5,6 @@ import json
 api = "https://gitlab.com/api/v4/"
 token = 'glpat-Sa6G7btfkL6Vm-e7maAY'
 
-count_saved_files = 2
-
 def request_id(option):         
         response = requests.get(f"{api}{option}", headers={'PRIVATE-TOKEN': f'{token}'})        
         content = response.content
