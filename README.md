@@ -20,7 +20,7 @@ A automated Gitlab migration tool using [Gitlab API](https://docs.gitlab.com/ee/
 
 ### Users
 
-- [x] Users transfer*
+- [x] User transfer*
   - [x] name
   - [x] username
   - [x] email (username@vertigo.com.br)
@@ -28,7 +28,9 @@ A automated Gitlab migration tool using [Gitlab API](https://docs.gitlab.com/ee/
 \* Save files into created directories.
 
 ## Run as Docker
+
 To do
 
 ## Usage
+
 To do
