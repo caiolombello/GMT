@@ -140,6 +140,6 @@ def runners():
                 request_id(option)
 
 if __name__ == "__main__":
-        # projects_subgroups()
-        # projects_ci()
+        projects_subgroups()
+        projects_ci()
         runners()
