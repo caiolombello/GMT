@@ -76,7 +76,7 @@ def delete_projects():
         for (dirpath, dirnames, filenames) in walk('./new-projects'):
                 files.extend(filenames)
         for i in range(len(files)):
-                remove('./new-projects/' + files[i])
+                remove('./new-projects/' + files[i])        
         response = requests.get(url=api+'?per_page=100', headers={'PRIVATE-TOKEN': f'{token}'})
         print(Fore.GREEN + str(response))
         resp_dict = json.loads(response.content)
@@ -95,7 +95,7 @@ def post_variables():
         for (dirpath, dirnames, filenames) in walk('./variables'):
                 variables.extend(filenames)
                 variables.sort()
-        
+
         projects = []
         for (dirpath, dirnames, filenames) in walk('./projects'):
                 projects.extend(filenames)
@@ -106,45 +106,49 @@ def post_variables():
                 new_projects.extend(filenames)
                 new_projects.sort()
         
-        variables_set = set(variables)
-        projects_set = set(projects)
-        variables_set.intersection(projects_set)
-        for i in range(len(variables_set)):
-                        origin_id = variables[i].split("-")
-                        origin_id = origin_id[0]
-                        variable_file = open(f'./variables/{origin_id}-ci_variables.json', 'rb')
-                        variable_data = json.loads(variable_file.read())
-                        
-                        project_path = []
-                        project_id = []
-                        for j in projects:
-                                project_file = open(f'./projects/{j}', 'rb')
-                                project_data = json.loads(project_file.read())
-                                project_path.append(project_data['path'])
-                                project_id.append(str(project_data['id']))
+        origin_ids = []
+        for i in range(len(variables)):
+                origin_id = variables[i].split("-")
+                origin_ids.append(origin_id[0])
+                       
+        project_path = []
+        project_id = []
+        for j in range(len(origin_ids)):        
+                project_file = open(f'./projects/{origin_ids[j]}-project.json', 'rb')
+                project_data = json.loads(project_file.read())
+                project_path.append(project_data['path'])
+                project_id.append(str(project_data['id']))
+        print(project_path)
 
-                        new_project_path = []
-                        new_project_id = []
-                        for j in new_projects:
-                                new_project_file = open(f'./new-projects/{j}', 'rb')
-                                new_project_data = json.loads(new_project_file.read())
-                                new_project_path.append(new_project_data['path'])
-                                new_project_id.append(str(new_project_data['id']))
+        new_project_path = []
+        new_project_id = []
+        for j in range(len(new_projects)):        
+                new_project_file = open(f'./new-projects/{new_projects[j]}', 'rb')
+                new_project_data = json.loads(new_project_file.read())
+                new_project_path.append(new_project_data['path'])
+                new_project_id.append(str(new_project_data['id']))
+        print(new_project_path)
 
-                        for j in range(len(project_path)):
-                                pos = new_project_path.index(project_path[j])
-                                print(project_path[j])
-                                print(pos)
-                                print(new_project_id[pos])
+        for j in range(len(project_path)):
+                variable_file = open(f'./variables/{origin_ids[j]}-ci_variables.json', 'rb')
+                variable_data = json.loads(variable_file.read())
+                try:
+                        pos = new_project_path.index(project_path[j])
+                except ValueError:
+                        print(project_path[j] + ' not in list')
+                        continue
+                # print(project_path[j])
+                # print(pos)
+                # print(new_project_id[pos])
 
-                                for l in range(len(variable_data)):
-                                        print(f'/{new_project_id[pos]}/variables')
-                                        print(variable_data[l])
-                                        response = requests.post(url=api+f'/{new_project_id[pos]}/variables', data=variable_data[l], headers=headers)
-                                        print(response)
+                for k in range(len(variable_data)):
+                        print(f'/{new_project_id[pos]}/variables')
+                        print(variable_data[k])
+                        response = requests.post(url=api+f'/{new_project_id[pos]}/variables', data=variable_data[k], headers=headers)
+                        print(response)
 
 if __name__ == "__main__":
-        # post()
+        # post() 
         post_variables()
         # delete_projects()
         # push_repo_content()
