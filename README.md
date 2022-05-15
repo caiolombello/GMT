@@ -15,7 +15,7 @@ A automated Gitlab migration tool using [Gitlab API](https://docs.gitlab.com/ee/
 ### Content
 
 - [x] Repositories content migrations*
-- [ ] Variables migration at certain project* (Doing)
+- [x] Variables migration at certain project*
 - [ ] Runners migration
 
 ### Users
