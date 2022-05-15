@@ -137,9 +137,6 @@ def post_variables():
                 except ValueError:
                         print(project_path[j] + ' not in list')
                         continue
-                # print(project_path[j])
-                # print(pos)
-                # print(new_project_id[pos])
 
                 for k in range(len(variable_data)):
                         print(f'/{new_project_id[pos]}/variables')
@@ -148,7 +145,7 @@ def post_variables():
                         print(response)
 
 if __name__ == "__main__":
-        # post() 
+        post() 
         post_variables()
+        push_repo_content()
         # delete_projects()
-        # push_repo_content()
