@@ -31,9 +31,10 @@ Uma ferramenta de migração automatizada usando [Gitlab API](https://docs.gitla
 
 ### Client-side
 
-- Máquina registrada com chave SSH de ambos ambientes no Gitlab
+- Máquina registrada com chave SSH em ambos ambientes no Gitlab
 - Token de acesso de ambos ambientes no Gitlab
 - Função de usuário do Gitlab como Dono
+- Espaço para armazenamento de arquivos dos repositórios
 - Python >= 3.8
   - colorama
   - requests
