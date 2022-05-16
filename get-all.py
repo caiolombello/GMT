@@ -16,7 +16,15 @@ def request_id(option):
                 return ids
         print(Fore.BLUE + option)
         for i in range(len(resp_dict)):
-                if 'variables' in option:
+                if 'subgroups' in option:
+                        if not path.exists('subgroups'):
+                                mkdir('subgroups')
+                        filename = f"{resp_dict[i]['id']}-subgroup.json"
+                        with open(f"./subgroups/{filename}", "w") as write_file:
+                                json.dump(resp_dict[i], write_file, indent=4)
+                        print(Fore.GREEN + f'{filename} SAVED')
+                        ids.append(resp_dict[i]['id'])
+                elif 'variables' in option:
                         prefix = option.split("/")
                         if not path.exists('variables'):
                                 mkdir('variables')
@@ -96,7 +104,7 @@ def request_id(option):
 
 def projects_main():
         print(Fore.YELLOW + "\nMAIN")
-        id = '3544756'
+        id = '636953'
         option = f'groups/{id}/subgroups'
         
         ids = request_id(option)
@@ -164,7 +172,7 @@ def projects_subgroups():
         return groups_ids
 
 def projects_ci():
-        print(Fore.YELLOW + "VARIABLES")
+        print(Fore.YELLOW + "\nVARIABLES")
         
         files = []
         for (dirpath, dirnames, filenames) in walk('./projects'):
@@ -178,7 +186,7 @@ def projects_ci():
                 request_id(option)
 
 def runners():
-        print(Fore.YELLOW + "RUNNERS")
+        print(Fore.YELLOW + "\nRUNNERS")
         
         files = []
         for (dirpath, dirnames, filenames) in walk('./projects'):
