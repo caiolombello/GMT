@@ -3,11 +3,11 @@ from colorama import Fore
 import requests
 import json
 
-api = "https://gitlab.com/api/v4/"
-token = 'glpat-Sa6G7btfkL6Vm-e7maAY'
+OLD_ORIGIN_API = environ['OLD_ORIGIN_API']
+OLD_ORIGIN_TOKEN = environ['OLD_ORIGIN_TOKEN']
 
 def request_id(option):         
-        response = requests.get(f"{api}{option}", headers={'PRIVATE-TOKEN': f'{token}'})        
+        response = requests.get(f"{OLD_ORIGIN_API}{option}", headers={'PRIVATE-TOKEN': f'{OLD_ORIGIN_TOKEN}'})        
         content = response.content
         print(Fore.CYAN + str(response))
         resp_dict = json.loads(content)

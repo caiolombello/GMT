@@ -4,10 +4,10 @@ from os import remove, walk, mkdir, rmdir, path, listdir, environ
 import requests
 import json
 
-api = 'http://localhost:8080/api/v4/projects'
-token = 'sWQYxfYNJzbk4Mvksg61'
+ORIGIN_API = environ['ORIGIN_API']
+ORIGIN_TOKEN = environ['ORIGIN_TOKEN']
 
-headers = {'PRIVATE-TOKEN' : token}
+headers = {'PRIVATE-TOKEN' : ORIGIN_TOKEN}
 
 def git(*args):
         return subprocess.check_call(['git'] + list(args))
@@ -21,7 +21,7 @@ def post():
                 for j in files:
                         file = open(f'./projects/{j}', 'rb')
                         data = json.loads(file.read())
-                        response = requests.post(url=api, data=data, headers=headers)
+                        response = requests.post(url=ORIGIN_API, data=data, headers=headers)
                         if response.status_code == 201:
                                 print(Fore.GREEN + 'ID: ' + str(data['id']) + '    ' + str(response) + Fore.WHITE)
                                 clone_repo_content(str(data['id']))
@@ -37,7 +37,7 @@ def write_post():
         print(Fore.BLUE + '\nSAVING NEW PROJECTS')
         if not path.exists("new-projects"):
                 mkdir("new-projects")
-        response = requests.get(url=api+'?per_page=100', headers={'PRIVATE-TOKEN': f'{token}'})        
+        response = requests.get(url=ORIGIN_API+'?per_page=100', headers={'PRIVATE-TOKEN': f'{ORIGIN_TOKEN}'})        
         if response.status_code == 200:
                 print(Fore.GREEN + str(response))
         else:
@@ -77,12 +77,12 @@ def delete_projects():
                 files.extend(filenames)
         for i in range(len(files)):
                 remove('./new-projects/' + files[i])        
-        response = requests.get(url=api+'?per_page=100', headers={'PRIVATE-TOKEN': f'{token}'})
+        response = requests.get(url=ORIGIN_API+'?per_page=100', headers={'PRIVATE-TOKEN': f'{ORIGIN_TOKEN}'})
         print(Fore.GREEN + str(response))
         resp_dict = json.loads(response.content)
         for j in range(len(resp_dict)):
                 print("ID: " + str(resp_dict[j]['id']))
-                requests.delete(url=api+f"/{resp_dict[j]['id']}", headers={'PRIVATE-TOKEN': f'{token}'}) 
+                requests.delete(url=ORIGIN_API+f"/{resp_dict[j]['id']}", headers={'PRIVATE-TOKEN': f'{ORIGIN_TOKEN}'}) 
                 if response.status_code != 200:
                         print(Fore.RED + str(response))
                 else:
@@ -141,7 +141,7 @@ def post_variables():
                 for k in range(len(variable_data)):
                         print(f'/{new_project_id[pos]}/variables')
                         print(variable_data[k])
-                        response = requests.post(url=api+f'/{new_project_id[pos]}/variables', data=variable_data[k], headers=headers)
+                        response = requests.post(url=ORIGIN_API+f'/{new_project_id[pos]}/variables', data=variable_data[k], headers=headers)
                         print(response)
 
 if __name__ == "__main__":

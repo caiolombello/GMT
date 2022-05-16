@@ -46,11 +46,31 @@ Uma ferramenta de migração automatizada usando [Gitlab API](https://docs.gitla
 
 ### Server-side
 
-- SSH configurado devidamente na porta 22
+- SSH configurado devidamente com a porta 22 aberta
 
 ## Rodando em Docker
 
-Para fazer
+1. Variáveis precisam ser definidas:
+
+```bash
+export RSA=(RSA path)
+export OLD_ORIGIN_API=(example: https://gitlab.com/api/v4/)
+export OLD_ORIGIN_TOKEN=(old origin access token)
+export ORIGIN_API=(example: http://localhost:8080/api/v4/projects)
+export ORIGIN_TOKEN=(origin access token)
+```
+
+2. Rodando o Docker:
+
+```bash
+docker build \
+--build-arg RSA=RSA \
+--build-arg OLD_ORIGIN_API='https://gitlab.com/api/v4/' \
+--build-arg OLD_ORIGIN_TOKEN=OLD_ORIGIN_TOKEN \
+--build-arg ORIGIN_API=ORIGIN_API \
+--build-arg ORIGIN_TOKEN=ORIGIN_TOKEN \
+-t gitlab-export .
+```
 
 ## Utilização
 
