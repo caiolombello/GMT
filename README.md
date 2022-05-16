@@ -27,6 +27,25 @@ Uma ferramenta de migração automatizada usando [Gitlab API](https://docs.gitla
 
 \* Salva seus respectivos arquivos em seus diretórios propriamente criados.
 
+## Requisitos
+
+### Client-side
+
+- Máquina registrada com chave SSH de ambos ambientes no Gitlab
+- Token de acesso de ambos ambientes no Gitlab
+- Função de usuário do Gitlab como Dono
+- Python >= 3.8
+  - colorama
+  - requests
+  - urllib3
+  - chardet
+
+`pip3 install colorama requests urllib3 chardet`
+
+### Server-side
+
+- SSH configurado devidamente na porta 22
+
 ## Rodando em Docker
 
 Para fazer
