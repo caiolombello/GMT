@@ -1,4 +1,4 @@
-from os import remove, walk, mkdir, rmdir, path, listdir
+from os import remove, walk, mkdir, rmdir, path, listdir, environ
 from colorama import Fore
 import requests
 import json

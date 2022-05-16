@@ -1,6 +1,6 @@
 import subprocess
 from colorama import Fore
-from os import remove, walk, mkdir, rmdir, path, listdir
+from os import remove, walk, mkdir, rmdir, path, listdir, environ
 import requests
 import json
 
