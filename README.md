@@ -23,7 +23,7 @@ Uma ferramenta de migração automatizada usando [Gitlab API](https://docs.gitla
 - [x] Transferência de usuários*
   - [x] Nome
   - [x] Usuário
-  - [x] Email (usuário@vertigo.com.br)
+  - [x] Email (usuario@vertigo.com.br)
 
 \* Salva seus respectivos arquivos em seus diretórios propriamente criados.
 
