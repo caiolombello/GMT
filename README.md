@@ -1,36 +1,36 @@
-# Gitlab Export
+# Migração Gitlab
 
-A automated Gitlab migration tool using [Gitlab API](https://docs.gitlab.com/ee/api/).
+Uma ferramenta de migração automatizada usando [Gitlab API](https://docs.gitlab.com/ee/api/).
 
-## Features
+## Funcionalidades
 
-### Structure
+### Estrutura
 
-- [ ] Group transfer
-- [ ] Subgroup transfer
-- [x] Project transfer*
-- [x] Project deletion
-- [ ] Mantain the same Organization structure
+- [ ] Transferência de grupos
+- [ ] Transferência de subgrupos
+- [x] Transferência de projetos*
+- [x] Exclusão de projetos
+- [ ] Mantém a mesma organização estrutural do ambiente
 
-### Content
+### Conteúdo
 
-- [x] Repositories content migrations*
-- [x] Variables migration at certain project*
-- [ ] Runners migration*
+- [x] Migração do conteúdo dos repositórios*
+- [x] Migração das variáveis de ambiente para seus devidos projetos*
+- [ ] Migração dos Runners* (nenhuma possibilidade encontrada)
 
-### Users
+### Usuários
 
-- [x] User transfer*
-  - [x] name
-  - [x] username
-  - [x] email (username@vertigo.com.br)
+- [x] Transferência de usuários*
+  - [x] Nome
+  - [x] Usuário
+  - [x] Email (usuário@vertigo.com.br)
 
-\* Save files into created directories.
+\* Salva seus respectivos arquivos em seus diretórios propriamente criados.
 
-## Run as Docker
+## Rodando em Docker
 
-To do
+Para fazer
 
-## Usage
+## Utilização
 
-To do
+Para fazer
