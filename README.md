@@ -58,9 +58,9 @@ Uma ferramenta de migração automatizada usando [Gitlab API](https://docs.gitla
 ```bash
 export RSA=(RSA path)
 export OLD_ORIGIN_API=(example: https://gitlab.com/api/v4/)
-export OLD_ORIGIN_TOKEN=(old origin access token)
+export OLD_ORIGIN_TOKEN=(old origin access token from <https://gitlab.com/-/profile/personal_access_tokens>)
 export ORIGIN_API=(example: http://localhost:8080/api/v4/projects)
-export ORIGIN_TOKEN=(origin access token)
+export ORIGIN_TOKEN=(origin access token from <http://localhost:8080/-/profile/personal_access_tokens>)
 ```
 
 3. Rodando o Docker:

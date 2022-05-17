@@ -1,4 +1,4 @@
-from os import remove, walk, mkdir, rmdir, path, listdir, environ
+from os import walk, mkdir, path, environ
 from colorama import Fore
 import requests
 import json
@@ -40,6 +40,8 @@ def request_id(option):
                                 if json.dump(resp_dict[i], write_file, indent=4):
                                         print(Fore.GREEN + f'{filename} SAVED')
                 elif 'projects' in option:
+                        if resp_dict[i]['archived'] == True:
+                                continue
                         if not path.exists('projects'):
                                 mkdir('projects')
                         filename = f"{resp_dict[i]['id']}-project.json"

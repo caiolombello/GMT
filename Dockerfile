@@ -22,5 +22,5 @@ RUN apt-get install git
 RUN python3 -m pip install --upgrade pip && \
 pip3 install colorama requests urllib3 chardet && \
 python3 get-all.py && \
-python3 post-all.py && \
+python3 post-all.py || \
 python3 transfer-users.py

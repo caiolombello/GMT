@@ -23,7 +23,7 @@ def post():
                         data = json.loads(file.read())
                         response = requests.post(url=ORIGIN_API+"/projects", data=data, headers=headers)
                         if response.status_code == 201:
-                                print(Fore.GREEN + 'ID: ' + str(data['id']) + '\t' + str(response) + Fore.WHITE)
+                                print(Fore.GREEN + f"ID: {str(data['id'])}\t{str(response)}" + Fore.WHITE)
                                 clone_repo_content(str(data['id']))
                         else:   
                                 print(Fore.RED + 'ID: ' + str(data['id']) + '\t' + str(response))
@@ -44,15 +44,17 @@ def write_post():
                 print(Fore.RED + str(response))
         resp_dict = json.loads(response.content)
         for i in range(len(resp_dict)):
-                with open(f"./new-projects/{resp_dict[i]['id']}-project.json", "w") as write_file:
+                filename = f"{resp_dict[i]['id']}-project.json"
+                with open(f"./new-projects/{filename}", "w") as write_file:
                         json.dump(resp_dict[i], write_file, indent=4)
+                print(Fore.GREEN + f'{filename} SAVED')
 
 def clone_repo_content(id):
         if not path.exists('repo-content'):
                 mkdir('repo-content')
         file = open(f'./projects/{id}-project.json', 'rb')
         data = json.loads(file.read())
-        if not path.exists(str(data['id'])):
+        if not path.exists(str(data['path'])):
                 mkdir('./repo-content/' + str(data['path']))
                 git("clone", data['ssh_url_to_repo'], './repo-content/' + str(data['path']))
 
@@ -60,11 +62,10 @@ def push_repo_content():
         files = []
         for (dirpath, dirnames, filenames) in walk('./new-projects'):
                 files.extend(filenames)
-                files.sort()
-        for i in range(len(files)):
-                file = open(f'./new-projects/{files[i]}', 'rb')
+        for i in files:
+                file = open(f'./new-projects/{i}', 'rb')
                 data = json.loads(file.read())
-                path = './repo-content/' + data['path']
+                path = f"./repo-content/{data['path']}"
                 subprocess.Popen(["git", "remote", "rename", "origin", "old-origin"], cwd=path)
                 subprocess.Popen(["git", "remote", "add", "origin", f"{data['ssh_url_to_repo']}"], cwd=path)
                 subprocess.Popen(["git", "push", "-u", "origin", "--all"], cwd=path)
