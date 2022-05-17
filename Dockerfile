@@ -5,22 +5,22 @@ FROM python:${PYTHON_VERSION}
 ARG RSA
 ARG OLD_ORIGIN_API
 ARG OLD_ORIGIN_TOKEN
+ARG ORIGIN_IP
 ARG ORIGIN_API
 ARG ORIGIN_TOKEN
 
-COPY ${RSA} .
+COPY ${RSA} ./${RSA}
+COPY ${RSA}.pub ./${RSA}.pub
+RUN mkdir ~/.ssh
+COPY config root/.ssh/config
 
-RUN echo '\nPlease, enter the following RSA public key at http://localhost:8080/-/profile/keys to proceed:' && \
-cat ${RSA} && \
+RUN echo '\nPlease, enter the following RSA public key at http://yourhost:8080/-/profile/keys to proceed:' && \
+cat ${RSA}.pub && \
+echo "${IP}  localhost" > /etc/hosts && \
 echo 'StrictHostKeyChecking=no' > /etc/ssh/ssh_config
 
 WORKDIR /app/
-COPY *.py /app/
-
-RUN apt-get install git
+COPY *.py /app/ 
 
 RUN python3 -m pip install --upgrade pip && \
-pip3 install colorama requests urllib3 chardet && \
-python3 get-all.py && \
-python3 post-all.py || \
-python3 transfer-users.py
+pip3 install colorama requests urllib3 chardet

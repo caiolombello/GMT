@@ -49,17 +49,20 @@ Uma ferramenta de migração automatizada usando [Gitlab API](https://docs.gitla
 
 ## Rodando em Docker
 
-1. Copie a chave RSA pública para o diretório com o Dockerfile: 
+1. Copie a chave RSA privada e pública para o diretório com o Dockerfile: 
   
-`cp ~/.ssh/id_rsa.pub .`
+`cp ~/.ssh/docker . && cp ~/.ssh/docker.pub .`
+
+Deixe as chaves nomeadas como docker e docker.pub
 
 2. Variáveis precisam ser definidas:
 
 ```bash
-export RSA=(RSA path)
-export OLD_ORIGIN_API=(example: https://gitlab.com/api/v4/)
-export OLD_ORIGIN_TOKEN=(old origin access token from <https://gitlab.com/-/profile/personal_access_tokens>)
-export ORIGIN_API=(example: http://localhost:8080/api/v4/projects)
+export RSA=(private RSA file) &&
+export OLD_ORIGIN_API=(example: https://gitlab.com/api/v4/) &&
+export OLD_ORIGIN_TOKEN=(old origin access token from <https://gitlab.com/-/profile/personal_access_tokens>) &&
+export ORIGIN_IP=(origin ipv4) &&
+export ORIGIN_API=(example: http://localhost:8080/api/v4/projects) &&
 export ORIGIN_TOKEN=(origin access token from <http://localhost:8080/-/profile/personal_access_tokens>)
 ```
 
@@ -67,11 +70,12 @@ export ORIGIN_TOKEN=(origin access token from <http://localhost:8080/-/profile/p
 
 ```bash
 docker build \
---build-arg RSA=RSA \
---build-arg OLD_ORIGIN_API=OLD_ORIGIN_API \
---build-arg OLD_ORIGIN_TOKEN=OLD_ORIGIN_TOKEN \
---build-arg ORIGIN_API=ORIGIN_API \
---build-arg ORIGIN_TOKEN=ORIGIN_TOKEN \
+--build-arg RSA=$RSA \
+--build-arg OLD_ORIGIN_API=$OLD_ORIGIN_API \
+--build-arg OLD_ORIGIN_TOKEN=$OLD_ORIGIN_TOKEN \
+--build-arg ORIGIN_IP=$ORIGIN_IP \
+--build-arg ORIGIN_API=$ORIGIN_API \
+--build-arg ORIGIN_TOKEN=$ORIGIN_TOKEN \
 -t gitlab-export .
 ```
 
