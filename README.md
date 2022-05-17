@@ -59,6 +59,7 @@ Deixe as chaves nomeadas como docker e docker.pub
 
 ```bash
 export RSA=(private RSA file) &&
+export SOURCE_ID=(old origin source group id)
 export OLD_ORIGIN_API=(example: https://gitlab.com/api/v4/) &&
 export OLD_ORIGIN_TOKEN=(old origin access token from <https://gitlab.com/-/profile/personal_access_tokens>) &&
 export ORIGIN_IP=(origin ipv4) &&
@@ -71,6 +72,7 @@ export ORIGIN_TOKEN=(origin access token from <http://localhost:8080/-/profile/p
 ```bash
 docker build \
 --build-arg RSA=$RSA \
+--build-arg SOURCE_ID=$SOURCE_ID
 --build-arg OLD_ORIGIN_API=$OLD_ORIGIN_API \
 --build-arg OLD_ORIGIN_TOKEN=$OLD_ORIGIN_TOKEN \
 --build-arg ORIGIN_IP=$ORIGIN_IP \

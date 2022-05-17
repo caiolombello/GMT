@@ -156,22 +156,22 @@ def request_id(option):
 
 def projects_main():
     print(Fore.YELLOW + "\nMAIN")
-    id = "636953"
-    option = f"groups/{id}/subgroups"
+    SOURCE_ID = environ['SOURCE_ID']
+    option = f"groups/{SOURCE_ID}/subgroups"
 
     ids = request_id(option)
     main = []
     for i in ids:
-        id = i
-        option = f"groups/{id}/subgroups"
+        SOURCE_ID = i
+        option = f"groups/{SOURCE_ID}/subgroups"
         main.extend(request_id(option))
     print("OK")
 
     print(Fore.YELLOW + "\nMAIN PROJECTS")
     project = []
     for i in ids:
-        id = i
-        option = f"groups/{id}/projects/"
+        SOURCE_ID = i
+        option = f"groups/{SOURCE_ID}/projects/"
         print(Fore.LIGHTBLUE_EX + option)
         res = request_id(option)
         if res:

@@ -60,6 +60,5 @@ def post():
 
 
 if __name__ == "__main__":
-    request("groups/636953/members")
-    request("groups/3544756/members")
+    request(f"groups/{environ['SOURCE_ID']}/members")
     post()
