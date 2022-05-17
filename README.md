@@ -59,7 +59,7 @@ Deixe as chaves nomeadas como docker e docker.pub
 
 ```bash
 export RSA=(private RSA file) &&
-export SOURCE_ID=(old origin source group id)
+export SOURCE_ID=(id do grupo raiz de origem)
 export OLD_ORIGIN_API=(example: https://gitlab.com/api/v4/) &&
 export OLD_ORIGIN_TOKEN=(old origin access token from <https://gitlab.com/-/profile/personal_access_tokens>) &&
 export ORIGIN_IP=(origin ipv4) &&
@@ -128,6 +128,7 @@ export ORIGIN_TOKEN=(token gerado)
 10. Defina as variáveis:
 
 ```bash
+export SOURCE_ID=(id do grupo raiz de origem)
 export OLD_ORIGIN_API=(example: https://gitlab.com/api/v4/)
 export ORIGIN_API=(example: http://localhost:8080/api/v4/)
 ```
