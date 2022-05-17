@@ -97,7 +97,7 @@ export OLD_ORIGIN_TOKEN=(token gerado)
 2. Desabilite StrictHostKeyChecking na configuração do SSH:
 
 ```bash
-echo 'StrictHostKeyChecking=no' > ~/.ssh/config
+echo 'StrictHostKeyChecking=no' > /etc/ssh/ssh_config
 ```
 
 7. Gere outro token em: <https://localhost:8080/-/profile/personal_access_tokens>
