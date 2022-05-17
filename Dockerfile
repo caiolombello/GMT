@@ -15,8 +15,9 @@ RUN mkdir ~/.ssh
 COPY config root/.ssh/config
 
 RUN echo '\nPlease, enter the following RSA public key at http://yourhost:8080/-/profile/keys to proceed:' && \
-cat ${RSA}.pub && \
-echo "${IP}  localhost" > /etc/hosts && \
+cat ${RSA}.pub
+
+RUN echo "${ORIGIN_IP}  localhost" > /etc/hosts && \
 echo 'StrictHostKeyChecking=no' > /etc/ssh/ssh_config
 
 WORKDIR /app/
@@ -24,6 +25,6 @@ COPY *.py /app/
 
 RUN python3 -m pip install --upgrade pip && \
 pip3 install colorama requests urllib3 chardet
-RUN python3 get-all.py && \
-python3 post-all.py && \
-python3 transfer-users.py
+
+# RUN python3 get-all.py && \
+# python3 post-all.py
