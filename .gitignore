@@ -10,3 +10,5 @@ runners
 subgroups
 id_rsa.pub
 id_rsa
+docker
+docker.pub
