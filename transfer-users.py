@@ -53,7 +53,7 @@ def post():
     for i in files:
         file = open(f"./users/{i}", "rb")
         data = json.loads(file.read())
-        response = requests.post(url=ORIGIN_API, data=data, headers=headers)
+        response = requests.post(url=ORIGIN_API+'/users', data=data, headers=headers)
         if response.status_code == 201:
             print("USER CREATED: " + data["username"])
         print(response)
