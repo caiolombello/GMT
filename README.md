@@ -41,8 +41,7 @@ Uma ferramenta de migração automatizada usando [Gitlab API](https://docs.gitla
   - requests
   - urllib3
   - chardet
-
-`pip3 install colorama requests urllib3 chardet`
+- Git
 
 ### Server-side
 
@@ -65,7 +64,7 @@ export ORIGIN_TOKEN=(origin access token)
 ```bash
 docker build \
 --build-arg RSA=RSA \
---build-arg OLD_ORIGIN_API='https://gitlab.com/api/v4/' \
+--build-arg OLD_ORIGIN_API=OLD_ORIGIN_API \
 --build-arg OLD_ORIGIN_TOKEN=OLD_ORIGIN_TOKEN \
 --build-arg ORIGIN_API=ORIGIN_API \
 --build-arg ORIGIN_TOKEN=ORIGIN_TOKEN \

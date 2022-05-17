@@ -1,6 +1,6 @@
 import subprocess
 from colorama import Fore
-from os import remove, walk, mkdir, rmdir, path, listdir, environ
+from os import remove, walk, mkdir, path, environ
 import requests
 import json
 
@@ -23,10 +23,10 @@ def post():
                         data = json.loads(file.read())
                         response = requests.post(url=ORIGIN_API, data=data, headers=headers)
                         if response.status_code == 201:
-                                print(Fore.GREEN + 'ID: ' + str(data['id']) + '    ' + str(response) + Fore.WHITE)
+                                print(Fore.GREEN + 'ID: ' + str(data['id']) + '\t' + str(response) + Fore.WHITE)
                                 clone_repo_content(str(data['id']))
                         else:   
-                                print(Fore.RED + 'ID: ' + str(data['id']) + '    ' + str(response))
+                                print(Fore.RED + 'ID: ' + str(data['id']) + '\t' + str(response))
                                 files.remove(j)
                                 continue
         write_post()
@@ -145,7 +145,7 @@ def post_variables():
                         print(response)
 
 if __name__ == "__main__":
-        post() 
-        post_variables()
-        push_repo_content()
-        # delete_projects()
+        # post() 
+        # post_variables()
+        # push_repo_content()
+        delete_projects()
