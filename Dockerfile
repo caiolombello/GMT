@@ -24,9 +24,6 @@ COPY ${RSA} ./${RSA}
 COPY ${RSA}.pub ./${RSA}.pub
 COPY config root/.ssh/config
 
-RUN echo '\nPlease, enter the following RSA public key at http://yourhost:8080/-/profile/keys to proceed:' && \
-cat ${RSA}.pub
-
 WORKDIR /app/
 COPY *.py /app/ 
 

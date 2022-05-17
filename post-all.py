@@ -14,7 +14,7 @@ def git(*args):
     return subprocess.check_call(["git"] + list(args))
 
 
-def post():
+def post_projects():
     files = []
     for (dirpath, dirnames, filenames) in walk("./projects"):
         files.extend(filenames)
@@ -147,6 +147,6 @@ def post_variables():
 
 
 if __name__ == "__main__":
-    post()
+    post_projects()
     post_variables()
     push_repo_content()
