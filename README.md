@@ -73,4 +73,32 @@ docker build \
 
 ## Utilização
 
-Para fazer
+1. Gere um token em: <https://gitlab.com/-/profile/personal_access_tokens>
+2. Exporte o token: `export OLD_ORIGIN_TOKEN=(token gerado)`
+3. Gere uma chave RSA: `ssh-keygen`
+4. Exporte o caminho para chave pública: `export RSA=~/.ssh/id_rsa.pub`
+5. Registre sua máquina com o RSA em: <https://gitlab.com/-/profile/keys>
+6. Desabilite StrictHostKeyChecking na configuração do SSH:`echo 'StrictHostKeyChecking' > ~/.ssh/config`
+7. Gere outro token em: <https://localhost:8080/-/profile/personal_access_tokens>
+8. Exporte o token: `export ORIGIN_TOKEN=(token gerado)`
+9. Registre sua máquina com o RSA em: <http://localhost:8080/-/profile/keys>
+10. Defina as variáveis:
+
+```bash
+export OLD_ORIGIN_API=(example: https://gitlab.com/api/v4/)
+export ORIGIN_API=(example: http://localhost:8080/api/v4/)
+```
+
+11. Baixe o repositório:
+
+```bash
+git clone git@gitlab.com:vertigobr/devops/rea-de-testes/caio-barbieri/exportacao-gitlab.git && cd exportacao-gitlab
+```
+
+12. Rode:
+
+```bash
+python3 get-all.py && \
+python3 post-all.py && \
+python3 transfer-users
+```

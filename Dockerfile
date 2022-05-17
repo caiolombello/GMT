@@ -8,7 +8,7 @@ ARG OLD_ORIGIN_TOKEN
 ARG ORIGIN_API
 ARG ORIGIN_TOKEN
 
-RUN echo 'StrictHostKeyChecking=accept-new' > /etc/ssh/ssh_config
+RUN echo 'StrictHostKeyChecking=no' > /etc/ssh/ssh_config
 
 WORKDIR /app/
 COPY *.py /app/
