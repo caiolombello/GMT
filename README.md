@@ -88,18 +88,12 @@ export OLD_ORIGIN_TOKEN=(token gerado)
 
 `ssh-keygen`
 
-4. Exporte o caminho para chave pública: 
+1. Registre sua máquina com o RSA em: <https://gitlab.com/-/profile/keys>
+
+2. Desabilite StrictHostKeyChecking na configuração do SSH:
 
 ```bash
-export RSA=~/.ssh/id_rsa.pub
-```
-
-5. Registre sua máquina com o RSA em: <https://gitlab.com/-/profile/keys>
-
-6. Desabilite StrictHostKeyChecking na configuração do SSH:
-
-```bash
-echo 'StrictHostKeyChecking' > ~/.ssh/config
+echo 'StrictHostKeyChecking=no' > ~/.ssh/config
 ```
 
 7. Gere outro token em: <https://localhost:8080/-/profile/personal_access_tokens>
