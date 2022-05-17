@@ -8,7 +8,11 @@ ARG OLD_ORIGIN_TOKEN
 ARG ORIGIN_API
 ARG ORIGIN_TOKEN
 
-RUN echo 'StrictHostKeyChecking=no' > /etc/ssh/ssh_config
+COPY ${RSA} .
+
+RUN echo '\nPlease, enter the following RSA public key at http://localhost:8080/-/profile/keys to proceed:' && \
+cat ${RSA} && \
+echo 'StrictHostKeyChecking=no' > /etc/ssh/ssh_config
 
 WORKDIR /app/
 COPY *.py /app/
