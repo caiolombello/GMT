@@ -81,3 +81,9 @@ docker run -it gitlab-export bash
 python3 get-all.py && \
 python3 post-all.py
 ```
+
+5. Caso queira deletar todos os projetos:
+
+```bash
+python3 delete-projects.py
+```
