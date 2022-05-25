@@ -52,12 +52,12 @@ Deixe as chaves nomeadas como docker e docker.pub
 2. Variáveis precisam ser definidas:
 
 ```bash
-export SOURCE_ID=# id do grupo raiz de origem
+export SOURCE_ID=# id do grupo raiz do ambiente antigo
 export OLD_ORIGIN_USER=# usuário do ambiente antigo
-export OLD_ORIGIN_API=# exemplo: https://gitlab.com/api/v4/
+export OLD_ORIGIN_API=# api do ambiente antigo. exemplo: https://gitlab.com/api/v4/
 export OLD_ORIGIN_TOKEN= # token de acesso do ambiente antigo (https://gitlab.com/-/profile/personal_access_tokens)
 export ORIGIN_USER= # usuário do novo ambiente
-export ORIGIN_API=# exemplo: http://localhost:8080/api/v4/projects
+export ORIGIN_API=# api do novo ambiente. exemplo: http://localhost:8080/api/v4/projects
 export ORIGIN_TOKEN=# token de acesso do novo ambiente (http://localhost/-/profile/personal_access_tokens)
 ```
 
