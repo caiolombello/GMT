@@ -15,7 +15,7 @@ def delete_projects():
     for i in range(len(files)):
         remove("./new-projects/" + files[i])
     response = requests.get(
-        url=ORIGIN_API + "/projects?per_page=100",
+        url=ORIGIN_API + f"/projects?per_page=100",
         headers={"PRIVATE-TOKEN": f"{ORIGIN_TOKEN}"},
     )
     print(Fore.GREEN + str(response))

@@ -4,8 +4,12 @@ from os import remove, walk, mkdir, path, environ
 import requests
 import json
 
-ORIGIN_API = environ["ORIGIN_API"]
+OLD_ORIGIN_USER = environ["OLD_ORIGIN_USER"]
+OLD_ORIGIN_TOKEN = environ["OLD_ORIGIN_TOKEN"]
+ORIGIN_USER = environ["ORIGIN_USER"]
 ORIGIN_TOKEN = environ["ORIGIN_TOKEN"]
+ORIGIN_API = environ["ORIGIN_API"]
+
 
 headers = {"PRIVATE-TOKEN": ORIGIN_TOKEN}
 
@@ -66,7 +70,8 @@ def clone_repo_content(id):
     data = json.loads(file.read())
     if not path.exists(str(data["path"])):
         mkdir("./repo-content/" + str(data["path"]))
-        git("clone", data["ssh_url_to_repo"], "./repo-content/" + str(data["path"]))
+        link = str(data['http_url_to_repo']).replace('https://', '')
+        git("clone", f"https://{OLD_ORIGIN_USER}:{OLD_ORIGIN_TOKEN}@{link}", "./repo-content/" + str(data["path"]))
 
 
 def push_repo_content():
@@ -78,8 +83,9 @@ def push_repo_content():
         data = json.loads(file.read())
         path = f"./repo-content/{data['path']}"
         subprocess.Popen(["git", "remote", "rename", "origin", "old-origin"], cwd=path)
+        link = str(data['http_url_to_repo']).replace('https://', '')
         subprocess.Popen(
-            ["git", "remote", "add", "origin", f"{data['ssh_url_to_repo']}"], cwd=path
+            ["git", "remote", "add", "origin", f"https://{ORIGIN_USER}:{ORIGIN_TOKEN}@{link}"], cwd=path
         )
         subprocess.Popen(["git", "push", "-u", "origin", "--all"], cwd=path)
         subprocess.Popen(["git", "push", "-u", "origin", "--tags"], cwd=path)
@@ -145,8 +151,21 @@ def post_variables():
             )
             print(response)
 
+def post_users():
+    files = []
+    for (dirpath, dirnames, filenames) in walk("./users"):
+        files.extend(filenames)
+
+    for i in files:
+        file = open(f"./users/{i}", "rb")
+        data = json.loads(file.read())
+        response = requests.post(url=ORIGIN_API+'/users', data=data, headers=headers)
+        if response.status_code == 201:
+            print(Fore.BLUE + "USER CREATED: " + data["username"])
+        print(response)
+
 
 if __name__ == "__main__":
     post_projects()
     post_variables()
-    push_repo_content()
+    post_users()

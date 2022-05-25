@@ -201,7 +201,6 @@ def projects_groups():
     print(Fore.WHITE + "TOOK IDS: " + str(groups_ids))
     return groups_ids
 
-
 def projects_subgroups():
     print(Fore.YELLOW + "\nSUBGROUPS")
     groups_ids = projects_groups()
@@ -221,8 +220,38 @@ def projects_subgroups():
     print("OK")
     print(Fore.WHITE + "TOOK IDS: " + str(groups_ids))
     print(Fore.WHITE + "IDS COUNT: " + str(len(groups_ids)))
-    return groups_ids
 
+    print(Fore.YELLOW + "\nUSERS")
+    for i in groups_ids:
+        option = f"groups/{i}/members/all?per_page=100"
+        response = requests.get(
+                f"{OLD_ORIGIN_API}{option}", headers={"PRIVATE-TOKEN": f"{OLD_ORIGIN_TOKEN}"}
+            )
+        content = response.content
+        print(Fore.CYAN + str(response))
+        resp_dict = json.loads(content)
+        ids = []
+        print(Fore.BLUE + option)
+        if response.status_code != 200:
+            print(Fore.RED + str(response))
+        for j in range(len(resp_dict)):
+            user = resp_dict[j]["username"]
+            user = "".join([j for j in user if not j.isdigit()])
+            if not path.exists("users"):
+                mkdir("users")
+            filename = f"{user}.json"
+            with open(f"./users/{filename}", "w") as write_file:
+                json.dump(
+                    {
+                        "username": user,
+                        "name": resp_dict[j]["name"],
+                        "email": f"{user}@vertigo.com.br",
+                        "reset_password": "true"
+                    },
+                    write_file,
+                    indent=4,
+                )
+                print(Fore.GREEN + f"{filename} SAVED")
 
 def projects_ci():
     print(Fore.YELLOW + "\nVARIABLES")
@@ -252,7 +281,6 @@ def runners():
 
         option = f"projects/{str(data['id'])}/runners"
         request_id(option)
-
 
 if __name__ == "__main__":
     projects_subgroups()
