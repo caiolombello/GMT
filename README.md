@@ -6,8 +6,8 @@ Uma ferramenta de migração automatizada usando [Gitlab API](https://docs.gitla
 
 ### Estrutura
 
-- [ ] Transferência de grupos
-- [ ] Transferência de subgrupos
+- [ ] Transferência de grupos*
+- [ ] Transferência de subgrupos*
 - [x] Transferência de projetos*
 - [x] Exclusão de projetos
 - [ ] Mantém a mesma organização estrutural do ambiente
