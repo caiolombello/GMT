@@ -31,8 +31,6 @@ Uma ferramenta de migração automatizada usando [Gitlab API](https://docs.gitla
 
 ### Client-side
 
-- Máquina registrada com chave SSH em ambos ambientes no Gitlab
-- Chave RSA
 - Token de acesso de ambos ambientes no Gitlab
 - Função de usuário do Gitlab como Dono
 - Espaço para armazenamento de arquivos dos repositórios
@@ -42,10 +40,6 @@ Uma ferramenta de migração automatizada usando [Gitlab API](https://docs.gitla
   - urllib3
   - chardet
 - Git
-
-### Server-side
-
-- SSH configurado devidamente com a porta 22 aberta
 
 ## Rodando em Docker
 
