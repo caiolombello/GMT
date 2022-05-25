@@ -34,22 +34,16 @@ Uma ferramenta de migração automatizada usando [Gitlab API](https://docs.gitla
 - Token de acesso de ambos ambientes no Gitlab
 - Função de usuário do Gitlab como Dono
 - Espaço para armazenamento de arquivos dos repositórios
+- Git
 - Python >= 3.8
   - colorama
   - requests
   - urllib3
   - chardet
-- Git
 
 ## Rodando em Docker
 
-1. Copie a chave RSA privada e pública para o diretório com o Dockerfile: 
-  
-`cp ~/.ssh/docker . && cp ~/.ssh/docker.pub .`
-
-Deixe as chaves nomeadas como docker e docker.pub
-
-2. Variáveis precisam ser definidas:
+1. Variáveis precisam ser definidas:
 
 ```bash
 export SOURCE_ID=# id do grupo raiz do ambiente antigo
@@ -61,7 +55,7 @@ export ORIGIN_API=# api do novo ambiente. exemplo: http://localhost:8080/api/v4/
 export ORIGIN_TOKEN=# token de acesso do novo ambiente (http://localhost/-/profile/personal_access_tokens)
 ```
 
-3. Construindo imagem Docker:
+2. Construindo imagem Docker:
 
 ```bash
 docker build \
@@ -75,13 +69,13 @@ docker build \
 -t gitlab-export .
 ```
 
-4. Rodando em Docker:
+3. Rodando em Docker:
 
 ```bash
 docker run -it gitlab-export bash
 ```
 
-5. Executando a migração:
+4. Executando a migração:
 
 ```bash
 python3 get-all.py && \
