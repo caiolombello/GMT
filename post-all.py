@@ -1,3 +1,4 @@
+from asyncore import write
 import subprocess
 from colorama import Fore
 from os import remove, walk, mkdir, path, environ
@@ -16,7 +17,6 @@ headers = {"PRIVATE-TOKEN": ORIGIN_TOKEN}
 
 def git(*args):
     return subprocess.check_call(["git"] + list(args))
-
 
 def post_projects():
     files = []
@@ -41,7 +41,9 @@ def post_projects():
                 continue
     write_post()
     push_repo_content()
-
+    post_variables()
+    write_groups()
+    transfer_projects()
 
 def write_post():
     print(Fore.BLUE + "\nSAVING NEW PROJECTS")
@@ -49,7 +51,7 @@ def write_post():
         mkdir("new-projects")
     response = requests.get(
         url=ORIGIN_API + "/projects?per_page=100",
-        headers={"PRIVATE-TOKEN": f"{ORIGIN_TOKEN}"},
+        headers={"PRIVATE-TOKEN": f"{ORIGIN_TOKEN}"}
     )
     if response.status_code == 200:
         print(Fore.GREEN + str(response))
@@ -82,6 +84,7 @@ def push_repo_content():
         file = open(f"./new-projects/{i}", "rb")
         data = json.loads(file.read())
         path = f"./repo-content/{data['path']}"
+        subprocess.Popen(["git", "pull"], cwd=path)
         subprocess.Popen(["git", "remote", "rename", "origin", "old-origin"], cwd=path)
         link = str(data['http_url_to_repo']).replace('https://', '')
         subprocess.Popen(
@@ -151,6 +154,71 @@ def post_variables():
             )
             print(response)
 
+
+def write_groups():
+    print(Fore.BLUE + "\nSAVING NEW GROUPS")
+    if not path.exists("new-groups"):
+        mkdir("new-groups")
+    for i in range(0, 20):
+        response = requests.get(
+            url=ORIGIN_API + f"/groups/{environ['NEW_SOURCE_ID']}/descendant_groups?page={i}",
+            headers={"PRIVATE-TOKEN": f"{ORIGIN_TOKEN}"},
+        )
+        if response.status_code == 200:
+            print(Fore.GREEN + str(response))
+        else:
+            print(Fore.RED + str(response))
+        resp_dict = json.loads(response.content)
+        for i in range(len(resp_dict)):
+            filename = f"{resp_dict[i]['path']}.json"
+            with open(f"./new-groups/{filename}", "w") as write_file:
+                json.dump(resp_dict[i], write_file, indent=4)
+            print(Fore.GREEN + f"{filename} SAVED")
+
+
+def transfer_projects():
+    print(Fore.BLUE + "\nTRANSFERING PROJECTS TO GROUPS")
+    groups = []
+    for (dirpath, dirnames, filenames) in walk("./new-groups"):
+        groups.extend(filenames)
+
+    projects = []
+    for (dirpath, dirnames, filenames) in walk("./projects"):
+        projects.extend(filenames)
+
+    projects_path = []
+    projects_id = []
+    for i in projects:
+        project_file = open(f"./projects/{i}", "rb")
+        project_data = json.loads(project_file.read())
+        path = str(project_data['http_url_to_repo'])
+        path = path.split('/')
+        projects_path = path[-2]
+
+        response_id = requests.get(
+            url=ORIGIN_API + f"/projects?search={project_data['path']}",
+            headers={"PRIVATE-TOKEN": f"{ORIGIN_TOKEN}"}
+        )
+        content = response_id.content
+        resp_dict = json.loads(content)
+
+        group_file = open(f"./new-groups/{projects_path}.json")
+        group_data = json.loads(group_file.read())
+        group_id = group_data['id']
+
+        try:
+            response = requests.post(
+                url=ORIGIN_API + f"/groups/{group_id}/projects/{resp_dict[0]['id']}",
+                headers={"PRIVATE-TOKEN": f"{ORIGIN_TOKEN}"}
+            )
+            if response.status_code == 201:
+                print(Fore.GREEN + str(response))
+            else:
+                print(Fore.RED + str(response))
+        except:
+            continue
+
+
 def post_users():
     files = []
     for (dirpath, dirnames, filenames) in walk("./users"):
@@ -167,5 +235,4 @@ def post_users():
 
 if __name__ == "__main__":
     post_projects()
-    post_variables()
     post_users()
