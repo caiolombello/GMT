@@ -1,5 +1,6 @@
 from asyncore import write
 import subprocess
+from time import sleep
 from colorama import Fore
 from os import remove, walk, mkdir, path, environ
 import requests
@@ -49,20 +50,21 @@ def write_post():
     print(Fore.BLUE + "\nSAVING NEW PROJECTS")
     if not path.exists("new-projects"):
         mkdir("new-projects")
-    response = requests.get(
-        url=ORIGIN_API + "/projects?per_page=100",
-        headers={"PRIVATE-TOKEN": f"{ORIGIN_TOKEN}"}
-    )
-    if response.status_code == 200:
-        print(Fore.GREEN + str(response))
-    else:
-        print(Fore.RED + str(response))
-    resp_dict = json.loads(response.content)
-    for i in range(len(resp_dict)):
-        filename = f"{resp_dict[i]['id']}-project.json"
-        with open(f"./new-projects/{filename}", "w") as write_file:
-            json.dump(resp_dict[i], write_file, indent=4)
-        print(Fore.GREEN + f"{filename} SAVED")
+    for i in range(0, 20):
+        response = requests.get(
+            url=ORIGIN_API + f"/projects?page={i}",
+            headers={"PRIVATE-TOKEN": f"{ORIGIN_TOKEN}"}
+        )
+        if response.status_code == 200:
+            print(Fore.GREEN + str(response))
+        else:
+            print(Fore.RED + str(response))
+        resp_dict = json.loads(response.content)
+        for i in range(len(resp_dict)):
+            filename = f"{resp_dict[i]['id']}-project.json"
+            with open(f"./new-projects/{filename}", "w") as write_file:
+                json.dump(resp_dict[i], write_file, indent=4)
+            print(Fore.GREEN + f"{filename} SAVED")
 
 
 def clone_repo_content(id):
@@ -84,7 +86,6 @@ def push_repo_content():
         file = open(f"./new-projects/{i}", "rb")
         data = json.loads(file.read())
         path = f"./repo-content/{data['path']}"
-        subprocess.Popen(["git", "pull"], cwd=path)
         subprocess.Popen(["git", "remote", "rename", "origin", "old-origin"], cwd=path)
         link = str(data['http_url_to_repo']).replace('https://', '')
         subprocess.Popen(
@@ -92,6 +93,7 @@ def push_repo_content():
         )
         subprocess.Popen(["git", "push", "-u", "origin", "--all"], cwd=path)
         subprocess.Popen(["git", "push", "-u", "origin", "--tags"], cwd=path)
+        sleep(3)
 
 
 def post_variables():
