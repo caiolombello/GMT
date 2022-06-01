@@ -43,7 +43,9 @@ Uma ferramenta de migração automatizada usando [Gitlab API](https://docs.gitla
 
 ## Rodando em Docker
 
-1. Variáveis precisam ser definidas:
+1. [Exporte e Importe seus Grupos](https://docs.gitlab.com/ee/user/group/settings/import_export.html)
+
+2. Variáveis precisam ser definidas:
 
 ```bash
 export SOURCE_ID=# id do grupo raiz do ambiente antigo
@@ -56,7 +58,7 @@ export ORIGIN_API=# api do novo ambiente. exemplo: http://localhost:8080/api/v4/
 export ORIGIN_TOKEN=# token de acesso do novo ambiente (http://localhost/-/profile/personal_access_tokens)
 ```
 
-2. Construindo imagem Docker:
+3. Construindo imagem Docker:
 
 ```bash
 docker build \
@@ -64,26 +66,27 @@ docker build \
 --build-arg OLD_ORIGIN_USER=$OLD_ORIGIN_USER \
 --build-arg OLD_ORIGIN_API=$OLD_ORIGIN_API \
 --build-arg OLD_ORIGIN_TOKEN=$OLD_ORIGIN_TOKEN \ 
+--build-arg NEW_SOURCE_ID=$NEW_SOURCE_ID \
 --build-arg ORIGIN_USER=$ORIGIN_USER \ 
 --build-arg ORIGIN_API=$ORIGIN_API \
 --build-arg ORIGIN_TOKEN=$ORIGIN_TOKEN \
 -t gitlab-export .
 ```
 
-3. Rodando em Docker:
+4. Rodando em Docker:
 
 ```bash
 docker run -it gitlab-export bash
 ```
 
-4. Executando a migração:
+5. Executando a migração:
 
 ```bash
 python3 get-all.py && \
 python3 post-all.py
 ```
 
-5. Caso queira deletar todos os projetos:
+6. Caso queira deletar todos os projetos:
 
 ```bash
 python3 delete-projects.py
