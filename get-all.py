@@ -246,8 +246,9 @@ def projects_subgroups():
                         "username": user,
                         "name": resp_dict[j]["name"],
                         "email": f"{user}@vertigo.com.br",
-                        "reset_password": "true",
-                        "password": "V3rT1G0-D3v0P5-2022"
+                        "reset_password": "false",
+                        "password": "V3rT1G0-D3v0P5-2022",
+                        "skip_confirmation": "true"
                     },
                     write_file,
                     indent=4,

@@ -28,23 +28,9 @@ def post_projects():
         for j in files:
             file = open(f"./projects/{j}", "rb")
             data = json.loads(file.read())
-            response = requests.post(
-                url=ORIGIN_API + "/projects", data=data, headers=headers
-            )
-            if response.status_code == 201:
-                print(
-                    Fore.GREEN + f"ID: {str(data['id'])}\t{str(response)}" + Fore.WHITE
-                )
-                clone_repo_content(str(data["id"]))
-            else:
-                print(Fore.RED + "ID: " + str(data["id"]) + "\t" + str(response))
-                files.remove(j)
-                continue
+            clone_repo_content(str(data["id"]))
     write_post()
-    push_repo_content()
     post_variables()
-    write_groups()
-    transfer_projects()
 
 def write_post():
     print(Fore.BLUE + "\nSAVING NEW PROJECTS")
@@ -72,28 +58,35 @@ def clone_repo_content(id):
         mkdir("repo-content")
     file = open(f"./projects/{id}-project.json", "rb")
     data = json.loads(file.read())
-    if not path.exists(str(data["path"])):
-        mkdir("./repo-content/" + str(data["path"]))
-        link = str(data['http_url_to_repo']).replace('https://', '')
-        git("clone", f"https://{OLD_ORIGIN_USER}:{OLD_ORIGIN_TOKEN}@{link}", "./repo-content/" + str(data["path"]))
-
-
-def push_repo_content():
-    files = []
-    for (dirpath, dirnames, filenames) in walk("./new-projects"):
-        files.extend(filenames)
-    for i in files:
-        file = open(f"./new-projects/{i}", "rb")
-        data = json.loads(file.read())
-        path = f"./repo-content/{data['path']}"
-        subprocess.Popen(["git", "remote", "rename", "origin", "old-origin"], cwd=path)
-        link = str(data['http_url_to_repo']).replace('https://', '')
+    local = f"./repo-content/{data['path']}"
+    origin = str(data['http_url_to_repo']).replace('https://', '')
+    link = origin.replace('gitlab.com', 'gitlab.vertigo-devops.com')
+    time = 5
+    if not path.exists(local):
+        mkdir(local)
+        git("clone", f"https://{OLD_ORIGIN_USER}:{OLD_ORIGIN_TOKEN}@{origin}", local)
+        sleep(time)
+        subprocess.Popen(["git", "remote", "rename", "origin", "old-origin"], cwd=local)
+        sleep(time)
         subprocess.Popen(
-            ["git", "remote", "add", "origin", f"https://{ORIGIN_USER}:{ORIGIN_TOKEN}@{link}"], cwd=path
+            ["git", "remote", "add", "origin", f"https://{ORIGIN_USER}:{ORIGIN_TOKEN}@{link}"], cwd=local
         )
-        subprocess.Popen(["git", "push", "-u", "origin", "--all"], cwd=path)
-        subprocess.Popen(["git", "push", "-u", "origin", "--tags"], cwd=path)
-        sleep(3)
+        sleep(time)
+        subprocess.Popen(["git", "push", "-u", "origin", "--all"], cwd=local)
+        sleep(time)
+        subprocess.Popen(["git", "push", "-u", "origin", "--tags"], cwd=local)
+        sleep(time)
+    else:        
+        subprocess.Popen(["git", "remote", "rename", "origin", "old-origin"], cwd=local)
+        sleep(time)
+        subprocess.Popen(
+            ["git", "remote", "add", "origin", f"https://{ORIGIN_USER}:{ORIGIN_TOKEN}@{link}"], cwd=local
+        )
+        sleep(time)
+        subprocess.Popen(["git", "push", "-u", "origin", "--all"], cwd=local)
+        sleep(time)
+        subprocess.Popen(["git", "push", "-u", "origin", "--tags"], cwd=local)
+        sleep(time)
 
 
 def post_variables():
