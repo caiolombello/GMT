@@ -24,19 +24,22 @@ def post_projects():
     for (dirpath, dirnames, filenames) in walk("./projects"):
         files.extend(filenames)
     print(Fore.BLUE + "\nPOSTING PROJECTS")
-    for i in range(len(files)):
-        for j in files:
-            file = open(f"./projects/{j}", "rb")
-            data = json.loads(file.read())
+    for i in files:
+        file = open(f"./projects/{i}", "rb")
+        data = json.loads(file.read())
+        try:
             clone_repo_content(str(data["id"]))
+        except:
+            continue
     write_post()
     post_variables()
+    edit_projects()
 
 def write_post():
     print(Fore.BLUE + "\nSAVING NEW PROJECTS")
     if not path.exists("new-projects"):
         mkdir("new-projects")
-    for i in range(0, 20):
+    for i in range(0, 50):
         response = requests.get(
             url=ORIGIN_API + f"/projects?page={i}",
             headers={"PRIVATE-TOKEN": f"{ORIGIN_TOKEN}"}
@@ -58,33 +61,31 @@ def clone_repo_content(id):
         mkdir("repo-content")
     file = open(f"./projects/{id}-project.json", "rb")
     data = json.loads(file.read())
-    local = f"./repo-content/{data['path']}"
+    local = f"./repo-content/{data['id']}"
     origin = str(data['http_url_to_repo']).replace('https://', '')
     link = origin.replace('gitlab.com', 'gitlab.vertigo-devops.com')
-    time = 5
+    time = 2
     if not path.exists(local):
         mkdir(local)
+        print(Fore.YELLOW + str(data['path'] + Fore.WHITE))
         git("clone", f"https://{OLD_ORIGIN_USER}:{OLD_ORIGIN_TOKEN}@{origin}", local)
         sleep(time)
         subprocess.Popen(["git", "remote", "rename", "origin", "old-origin"], cwd=local)
-        sleep(time)
         subprocess.Popen(
             ["git", "remote", "add", "origin", f"https://{ORIGIN_USER}:{ORIGIN_TOKEN}@{link}"], cwd=local
         )
-        sleep(time)
         subprocess.Popen(["git", "push", "-u", "origin", "--all"], cwd=local)
-        sleep(time)
         subprocess.Popen(["git", "push", "-u", "origin", "--tags"], cwd=local)
         sleep(time)
     else:        
-        subprocess.Popen(["git", "remote", "rename", "origin", "old-origin"], cwd=local)
+        print(Fore.YELLOW + str(data['path'] + Fore.WHITE))
+        subprocess.Popen(["git", "pull"], cwd=local)
         sleep(time)
+        subprocess.Popen(["git", "remote", "rename", "origin", "old-origin"], cwd=local)
         subprocess.Popen(
             ["git", "remote", "add", "origin", f"https://{ORIGIN_USER}:{ORIGIN_TOKEN}@{link}"], cwd=local
         )
-        sleep(time)
         subprocess.Popen(["git", "push", "-u", "origin", "--all"], cwd=local)
-        sleep(time)
         subprocess.Popen(["git", "push", "-u", "origin", "--tags"], cwd=local)
         sleep(time)
 
@@ -149,7 +150,27 @@ def post_variables():
             )
             print(response)
 
+def edit_projects():
+    projects = []
+    for (dirpath, dirnames, filenames) in walk("./projects"):
+        projects.extend(filenames)
 
+    new_projects = []
+    for (dirpath, dirnames, filenames) in walk("./new-projects"):
+        new_projects.extend(filenames)
+
+    for i in range(len(new_projects)):
+        new_file = open(f"./new-projects/{new_projects[i]}", "rb")
+        new_data = json.loads(new_file.read())
+        old_file = open(f"./projects/{projects[i]}", "rb")
+        old_data = json.loads(old_file.read())
+        
+        for j in range(len(new_projects)):
+            if new_data["path_with_namespace"] == old_data["path_with_namespace"]:
+                response = requests.put(url=ORIGIN_API+f'/projects/{new_data["id"]}', data=old_data, headers=headers)
+                print(response)
+        
+            
 def post_users():
     files = []
     for (dirpath, dirnames, filenames) in walk("./users"):
