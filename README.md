@@ -51,7 +51,6 @@ export SOURCE_ID=# id do grupo raiz do ambiente antigo
 export OLD_ORIGIN_USER=# usuário do ambiente antigo
 export OLD_ORIGIN_API=# api do ambiente antigo. exemplo: https://gitlab.com/api/v4/
 export OLD_ORIGIN_TOKEN= # token de acesso do ambiente antigo (https://gitlab.com/-/profile/personal_access_tokens)
-export NEW_SOURCE_ID=#id do novo grupo raiz do ambiente novo
 export ORIGIN_USER= # usuário do novo ambiente
 export ORIGIN_API=# api do novo ambiente. exemplo: http://localhost:8080/api/v4/projects
 export ORIGIN_TOKEN=# token de acesso do novo ambiente (http://localhost/-/profile/personal_access_tokens)
@@ -65,7 +64,6 @@ docker build \
 --build-arg OLD_ORIGIN_USER=$OLD_ORIGIN_USER \
 --build-arg OLD_ORIGIN_API=$OLD_ORIGIN_API \
 --build-arg OLD_ORIGIN_TOKEN=$OLD_ORIGIN_TOKEN \ 
---build-arg NEW_SOURCE_ID=$NEW_SOURCE_ID \
 --build-arg ORIGIN_USER=$ORIGIN_USER \ 
 --build-arg ORIGIN_API=$ORIGIN_API \
 --build-arg ORIGIN_TOKEN=$ORIGIN_TOKEN \
