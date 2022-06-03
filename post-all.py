@@ -2,7 +2,7 @@ from asyncore import write
 import subprocess
 from time import sleep
 from colorama import Fore
-from os import remove, walk, mkdir, path, environ
+from os import walk, mkdir, path, environ
 import requests
 import json
 
@@ -31,11 +31,50 @@ def post_projects():
             clone_repo_content(str(data["id"]))
         except:
             continue
-    write_post()
+    write_projects()
     post_variables()
     edit_projects()
 
-def write_post():
+def request_id(option):
+    response = requests.get(
+            f"{ORIGIN_API}{option}", headers={"PRIVATE-TOKEN": f"{OLD_ORIGIN_TOKEN}"}
+        )
+    content = response.content
+    print(Fore.CYAN + str(response))
+    resp_dict = json.loads(content)
+    ids = []
+    if response.status_code != 200:
+        return ids
+    print(Fore.BLUE + option)
+    for i in range(len(resp_dict)):
+        if "groups" in option:
+            if not path.exists("groups"):
+                mkdir("groups")
+            filename = f"{resp_dict[i]['id']}-group.json"
+            with open(f"./groups/{filename}", "w") as write_file:
+                json.dump(resp_dict[i], write_file, indent=4)
+            print(Fore.GREEN + f"{filename} SAVED")
+            ids.append(resp_dict[i]["id"])
+        else:
+            ids.append(resp_dict[i]["id"])
+    return ids
+
+
+def write_groups():
+    print(Fore.YELLOW + "\nSAVING NEW GROUPS")
+    groups_ids = []
+    for i in range(0, 20):
+        option = f"/groups/{environ['NEW_SOURCE_ID']}/descendant_groups?page={i}"
+        groups_ids.extend(request_id(option))
+        print(Fore.WHITE + "IDS COUNT: " + str(len(groups_ids)))
+
+    print(Fore.YELLOW + "\SUBGROUPS")
+    for j in groups_ids:
+        id = j
+        option = f"groups/{id}/subgroups"
+        groups_ids.extend(request_id(option))
+
+def write_projects():
     print(Fore.BLUE + "\nSAVING NEW PROJECTS")
     if not path.exists("new-projects"):
         mkdir("new-projects")
@@ -68,14 +107,13 @@ def clone_repo_content(id):
     if not path.exists(local):
         mkdir(local)
         print(Fore.YELLOW + str(data['path'] + Fore.WHITE))
-        git("clone", f"https://{OLD_ORIGIN_USER}:{OLD_ORIGIN_TOKEN}@{origin}", local)
+        git("clone", "--mirror", f"https://{OLD_ORIGIN_USER}:{OLD_ORIGIN_TOKEN}@{origin}", local)
         sleep(time)
         subprocess.Popen(["git", "remote", "rename", "origin", "old-origin"], cwd=local)
         subprocess.Popen(
             ["git", "remote", "add", "origin", f"https://{ORIGIN_USER}:{ORIGIN_TOKEN}@{link}"], cwd=local
         )
-        subprocess.Popen(["git", "push", "-u", "origin", "--all"], cwd=local)
-        subprocess.Popen(["git", "push", "-u", "origin", "--tags"], cwd=local)
+        subprocess.Popen(["git", "push", "-u", "origin", "--mirror"], cwd=local)
         sleep(time)
     else:        
         print(Fore.YELLOW + str(data['path'] + Fore.WHITE))
@@ -85,18 +123,17 @@ def clone_repo_content(id):
         subprocess.Popen(
             ["git", "remote", "add", "origin", f"https://{ORIGIN_USER}:{ORIGIN_TOKEN}@{link}"], cwd=local
         )
-        subprocess.Popen(["git", "push", "-u", "origin", "--all"], cwd=local)
-        subprocess.Popen(["git", "push", "-u", "origin", "--tags"], cwd=local)
+        subprocess.Popen(["git", "push", "-u", "origin", "--mirror"], cwd=local)
         sleep(time)
 
 
 def post_variables():
-    print(Fore.BLUE + "\nPOSTING VARIABLES")
+    print(Fore.BLUE + "\nPOSTING PROJECTS VARIABLES")
 
-    variables = []
-    for (dirpath, dirnames, filenames) in walk("./variables"):
-        variables.extend(filenames)
-        variables.sort()
+    projects_variables = []
+    for (dirpath, dirnames, filenames) in walk("./projects-variables"):
+        projects_variables.extend(filenames)
+        projects_variables.sort()
 
     projects = []
     for (dirpath, dirnames, filenames) in walk("./projects"):
@@ -109,8 +146,8 @@ def post_variables():
         new_projects.sort()
 
     origin_ids = []
-    for i in range(len(variables)):
-        origin_id = variables[i].split("-")
+    for i in range(len(projects_variables)):
+        origin_id = projects_variables[i].split("-")
         origin_ids.append(origin_id[0])
 
     project_path = []
@@ -150,6 +187,66 @@ def post_variables():
             )
             print(response)
 
+    print(Fore.BLUE + "\nPOSTING GROUPS VARIABLES")
+
+    groups_variables = []
+    for (dirpath, dirnames, filenames) in walk("./groups-variables"):
+        groups_variables.extend(filenames)
+        groups_variables.sort()
+
+    groups = []
+    for (dirpath, dirnames, filenames) in walk("./groups"):
+        groups.extend(filenames)
+        groups.sort()
+
+    new_groups = []
+    for (dirpath, dirnames, filenames) in walk("./new-groups"):
+        new_groups.extend(filenames)
+        new_groups.sort()
+
+    origin_ids = []
+    for i in range(len(groups_variables)):
+        origin_id = groups_variables[i].split("-")
+        origin_ids.append(origin_id[0])
+
+    group_path = []
+    group_id = []
+    for j in range(len(origin_ids)):
+        group_file = open(f"./groups/{origin_ids[j]}-group.json", "rb")
+        group_data = json.loads(group_file.read())
+        group_path.append(group_data["path"])
+        group_id.append(str(group_data["id"]))
+    print(group_path)
+
+    group_path = []
+    new_group_id = []
+    for j in range(len(new_groups)):
+        new_group_file = open(f"./new-groups/{new_groups[j]}", "rb")
+        new_group_data = json.loads(new_group_file.read())
+        group_path.append(new_group_data["path"])
+        new_group_id.append(str(new_group_data["id"]))
+    print(group_path)
+
+    for j in range(len(group_path)):
+        variable_file = open(f"./variables/{origin_ids[j]}-ci_variables.json", "rb")
+        variable_data = json.loads(variable_file.read())
+        try:
+            pos = group_path.index(group_path[j])
+        except ValueError:
+            print(group_path[j] + " not in list")
+            continue
+
+        for k in range(len(variable_data)):
+            print(f"/{new_group_id[pos]}/variables")
+            print(variable_data[k])
+            response = requests.post(
+                url=ORIGIN_API + f"groups/{new_group_id[pos]}/variables",
+                data=variable_data[k],
+                headers=headers,
+            )
+            print(response)
+
+
 def edit_projects():
     projects = []
     for (dirpath, dirnames, filenames) in walk("./projects"):
@@ -165,10 +262,17 @@ def edit_projects():
         old_file = open(f"./projects/{projects[i]}", "rb")
         old_data = json.loads(old_file.read())
         
-        for j in range(len(new_projects)):
-            if new_data["path_with_namespace"] == old_data["path_with_namespace"]:
-                response = requests.put(url=ORIGIN_API+f'/projects/{new_data["id"]}', data=old_data, headers=headers)
-                print(response)
+        if new_data["path_with_namespace"] == old_data["path_with_namespace"]:
+            response = requests.put(url=ORIGIN_API+f'/projects/{new_data["id"]}', 
+            data={
+                "name": old_data["name"],
+                "description": old_data["description"],
+                "tag_list": old_data["tag_list"],
+                "topics": old_data["topics"]
+                }, 
+                    headers=headers)
+            print(new_data["name"])
+            print(response)
         
             
 def post_users():

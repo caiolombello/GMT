@@ -19,20 +19,20 @@ def request_id(option):
         return ids
     print(Fore.BLUE + option)
     for i in range(len(resp_dict)):
-        if "subgroups" in option:
-            if not path.exists("subgroups"):
-                mkdir("subgroups")
-            filename = f"{resp_dict[i]['id']}-subgroup.json"
-            with open(f"./subgroups/{filename}", "w") as write_file:
-                json.dump(resp_dict[i], write_file, indent=4)
-            print(Fore.GREEN + f"{filename} SAVED")
-            ids.append(resp_dict[i]["id"])
-        elif "variables" in option:
+        if "groups" in option and "variables" in option:
             prefix = option.split("/")
-            if not path.exists("variables"):
-                mkdir("variables")
+            if not path.exists("groups-variables"):
+                mkdir("groups-variables")
             filename = f"{prefix[1]}-ci_variables.json"
-            with open(f"./variables/{filename}", "w") as write_file:
+            with open(f"./groups-variables/{filename}", "w") as write_file:
+                json.dump(resp_dict, write_file, indent=4)
+            print(Fore.GREEN + f"{filename} SAVED")
+        elif "projects" in option and "variables" in option:
+            prefix = option.split("/")
+            if not path.exists("projects-variables"):
+                mkdir("projects-variables")
+            filename = f"{prefix[1]}-ci_variables.json"
+            with open(f"./projects-variables/{filename}", "w") as write_file:
                 json.dump(resp_dict, write_file, indent=4)
             print(Fore.GREEN + f"{filename} SAVED")
         elif "projects" in option:
@@ -45,6 +45,14 @@ def request_id(option):
                 json.dump(resp_dict[i], write_file, indent=4
                 )
             print(Fore.GREEN + f"{filename} SAVED")
+        elif "groups" in option:
+            if not path.exists("groups"):
+                mkdir("groups")
+            filename = f"{resp_dict[i]['id']}-group.json"
+            with open(f"./groups/{filename}", "w") as write_file:
+                json.dump(resp_dict[i], write_file, indent=4)
+            print(Fore.GREEN + f"{filename} SAVED")
+            ids.append(resp_dict[i]["id"])
         else:
             ids.append(resp_dict[i]["id"])
     return ids
@@ -106,14 +114,14 @@ def projects_subgroups():
                 )
                 print(Fore.GREEN + f"{filename} SAVED")
 
-def projects_ci():
+def variables():
     print(Fore.YELLOW + "\nVARIABLES")
 
-    files = []
+    projects_variables = []
     for (dirpath, dirnames, filenames) in walk("./projects"):
-        files.extend(filenames)
+        projects_variables.extend(filenames)
 
-    for j in files:
+    for j in projects_variables:
         file = open(f"./projects/{j}", "rb")
         data = json.loads(file.read())
 
@@ -123,7 +131,21 @@ def projects_ci():
         except:
             continue
 
+    groups_variables = []
+    for (dirpath, dirnames, filenames) in walk("./groups"):
+        groups_variables.extend(filenames)
+
+    for j in groups_variables:
+        file = open(f"./groups/{j}", "rb")
+        data = json.loads(file.read())
+
+        option = f"groups/{str(data['id'])}/variables"
+        try:
+            request_id(option)
+        except:
+            continue
+
 
 if __name__ == "__main__":
     projects_subgroups()
-    projects_ci()
+    variables()

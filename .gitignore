@@ -1,11 +1,12 @@
 __pycache__
 gitlab
 groups
+groups-variables
 new-groups
 users
 new-projects
 projects
-variables
+projects-variables
 repo-content
 runners
 subgroups
