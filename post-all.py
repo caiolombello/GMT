@@ -289,6 +289,5 @@ def post_users():
 
 
 if __name__ == "__main__":
-    # post_projects()
-    # post_users()
-    post_variables()
+    post_projects()
+    post_users()
