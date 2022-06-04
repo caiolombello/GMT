@@ -31,13 +31,12 @@ def post_projects():
             clone_repo_content(str(data["id"]))
         except:
             continue
-    write_projects()
     post_variables()
     edit_projects()
 
 def request_id(option):
     response = requests.get(
-            f"{ORIGIN_API}{option}", headers={"PRIVATE-TOKEN": f"{OLD_ORIGIN_TOKEN}"}
+            f"{ORIGIN_API}{option}", headers={"PRIVATE-TOKEN": f"{ORIGIN_TOKEN}"}
         )
     content = response.content
     print(Fore.CYAN + str(response))
@@ -48,10 +47,10 @@ def request_id(option):
     print(Fore.BLUE + option)
     for i in range(len(resp_dict)):
         if "groups" in option:
-            if not path.exists("groups"):
-                mkdir("groups")
+            if not path.exists("new-groups"):
+                mkdir("new-groups")
             filename = f"{resp_dict[i]['id']}-group.json"
-            with open(f"./groups/{filename}", "w") as write_file:
+            with open(f"./new-groups/{filename}", "w") as write_file:
                 json.dump(resp_dict[i], write_file, indent=4)
             print(Fore.GREEN + f"{filename} SAVED")
             ids.append(resp_dict[i]["id"])
@@ -128,6 +127,7 @@ def clone_repo_content(id):
 
 
 def post_variables():
+    write_projects()
     print(Fore.BLUE + "\nPOSTING PROJECTS VARIABLES")
 
     projects_variables = []
@@ -169,16 +169,15 @@ def post_variables():
     print(new_project_path)
 
     for j in range(len(project_path)):
-        variable_file = open(f"./variables/{origin_ids[j]}-ci_variables.json", "rb")
-        variable_data = json.loads(variable_file.read())
         try:
+            variable_file = open(f"./projects-variables/{origin_ids[j]}-ci_variables.json", "rb")
+            variable_data = json.loads(variable_file.read())
             pos = new_project_path.index(project_path[j])
         except ValueError:
-            print(project_path[j] + " not in list")
             continue
 
         for k in range(len(variable_data)):
-            print(f"/{new_project_id[pos]}/variables")
+            print(f"/{new_project_id[pos]}/projects-variables")
             print(variable_data[k])
             response = requests.post(
                 url=ORIGIN_API + f"projects/{new_project_id[pos]}/variables",
@@ -187,6 +186,7 @@ def post_variables():
             )
             print(response)
 
+    write_groups()
     print(Fore.BLUE + "\nPOSTING GROUPS VARIABLES")
 
     groups_variables = []
@@ -228,12 +228,11 @@ def post_variables():
     print(group_path)
 
     for j in range(len(group_path)):
-        variable_file = open(f"./variables/{origin_ids[j]}-ci_variables.json", "rb")
-        variable_data = json.loads(variable_file.read())
         try:
+            variable_file = open(f"./groups-variables/{origin_ids[j]}-ci_variables.json", "rb")
+            variable_data = json.loads(variable_file.read())
             pos = group_path.index(group_path[j])
-        except ValueError:
-            print(group_path[j] + " not in list")
+        except:
             continue
 
         for k in range(len(variable_data)):
@@ -290,5 +289,6 @@ def post_users():
 
 
 if __name__ == "__main__":
-    post_projects()
-    post_users()
+    # post_projects()
+    # post_users()
+    post_variables()
