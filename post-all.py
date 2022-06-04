@@ -245,7 +245,7 @@ def post_variables():
             )
             print(response)
 
-
+# TODO: fix this
 def edit_projects():
     projects = []
     for (dirpath, dirnames, filenames) in walk("./projects"):
